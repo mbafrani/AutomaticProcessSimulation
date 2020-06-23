@@ -151,6 +151,7 @@ def setup(log, env, no_traces, net, initial_marking):
 
     # Create more cases while the simulation is running
     for i in range(1, no_traces+1):
+        # Here is some idea for checking the time of generating cases to be in the business hours
         if (datetime.now()+timedelta(env.now)).hour>17 or (datetime.now()+timedelta(env.now)).hour <8:
             shift_time = (datetime.now() + timedelta(env.now))
             next_time = datetime(shift_time.year, shift_time.month, shift_time.day + 1, 8)
