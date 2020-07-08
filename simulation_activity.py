@@ -11,6 +11,7 @@ import warnings
 from pm4py.util import xes_constants
 from pm4py.util import constants
 import pandas as pd
+import matplotlib.pyplot as plt
 
 case_id_key = xes_constants.DEFAULT_TRACEID_KEY
 activity_key = xes_constants.DEFAULT_NAME_KEY
@@ -120,6 +121,22 @@ def verify_extension_and_import():
     log = import_xes(file_path)
     return log
 
+def remove_outliers(dataset, attribute):
+    
+    Q1 = dataset[attribute].quantile(0.25)
+    Q3 = dataset[attribute].quantile(0.75)
+    IQR = Q3 - Q1
+    
+    UpperWhisker = Q3 + 1.5 *IQR
+    LowerWhisker = Q1 - 1.5 *IQR
+    
+    filter = (dataset[attribute] > LowerWhisker) | (dataset[attribute] < UpperWhisker)
+    
+    result = dataset.loc[filter]   
+
+    return result
+    
+    
 def create_methods():
     """
                 This function calculates the average time taken for each activity and writes methods to method.py file
@@ -159,21 +176,31 @@ def create_methods():
                 else:
                     timetaken[attribute].append(mean)
 
-    for attribute in timetaken:
-        timetaken[attribute] = statistics.mean(timetaken[attribute])
+    dfn = pd.DataFrame.from_dict(timetaken, orient='index')
+    dfr = dfn.transpose()
+          
+    
+    for col in dfr.columns:         
+        cleaned = remove_outliers(dfr, col)
+
+    cleaned.dropna(inplace = True) 
+    new_timetaken = cleaned.to_dict('list')
+    
+    for attribute in new_timetaken:
+        new_timetaken[attribute] = statistics.mean(new_timetaken[attribute])
     user_req = "y"
     user_input = input("Do you want to modify the average time for any activity? Enter y to modify or press any key to "
                        "continue ")
     if user_input.lower() == "y":
         while user_req.lower() == "y":
-            print("Average time taken for each activity in seconds: ", timetaken)
+            print("Average time taken for each activity in seconds: ", new_timetaken)
             user_activity = input("Enter the activity you want to configure the average time taken ")
-            if user_activity not in timetaken:
+            if user_activity not in new_timetaken:
                 print("No such activity found")
             else:
-                print("Activity Found, Average time taken is ", timetaken[user_activity])
+                print("Activity Found, Average time taken is ", new_timetaken[user_activity])
                 user_time = input("Enter the average time (in seconds) ")
-                timetaken[user_activity] = float(user_time)
+                new_timetaken[user_activity] = float(user_time)
             user_req = input("Do you want to configure more activities? Enter y to configure or press any key to "
                              "continue ")
 
@@ -183,7 +210,7 @@ def create_methods():
             if "concept:name" in event:
                 attribute = event["concept:name"]
                 if attribute not in attributes:
-                    attributes[attribute] = math.ceil(timetaken[attribute])
+                    attributes[attribute] = math.ceil(new_timetaken[attribute])
                 # attributes[attribute] = attributes[attribute] + 1
     print(attributes)
 
