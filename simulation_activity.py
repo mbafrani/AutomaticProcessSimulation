@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
-# %load simulation_activity.py
-
 import argparse
 import os
 from pathlib import Path
@@ -20,6 +12,7 @@ from pm4py.util import xes_constants
 from pm4py.util import constants
 import pandas as pd
 
+
 import scipy
 import scipy.stats
 import matplotlib
@@ -33,18 +26,14 @@ results = []
 warnings.filterwarnings('ignore')
 
 
-# In[ ]:
-
-
 def read_input_file_path():
     """
         Reads the input file path from the Command Line Interface and verifies if the file exists
-
         Returns
         --------------
         file.file_path
                 The file path of the input event log file
-        """
+    """    """
     parser = argparse.ArgumentParser()
     parser.add_argument("file_path", type=Path)
     file = parser.parse_args()
@@ -54,11 +43,11 @@ def read_input_file_path():
     else:
         print("File does not exist. Please input correct file")
         exit()
+        
     return str(file.file_path)
-
-
-# In[7]:
-
+    """
+    file = 'running-example.xes'
+    return file
 
 
 def import_xes(file_path):
@@ -68,7 +57,6 @@ def import_xes(file_path):
         --------------
         file_path
             Path of the input event log file
-
         Returns
         --------------
         xes_log
@@ -86,12 +74,10 @@ def import_csv(file_path):
             --------------
             :param file_path:
                 The path to the csv log file
-
             Returns
             --------------
             csv_log
                 The input event logs in the form of a log
-
             """
     data_frame = csv_import_adapter.import_dataframe_from_path(
         os.path.join(file_path), sep=";")
@@ -117,8 +103,9 @@ def verify_extension_and_import():
             log
                 The input event logs in the form of a log
             """
-    file_path = (read_input_file_path())
-    #file_path = ('C:\\Users\\admin\\Desktop\\final\\running-example')
+
+    file_path = read_input_file_path()
+    """
     file_name, file_extension = os.path.splitext(file_path)
     file_extension = file_extension.replace("'))", "")
     print("File Extension: ", file_extension)
@@ -131,8 +118,25 @@ def verify_extension_and_import():
     else:
         print("Unsupported extension. Supported file extensions are .xes and .csv ONLY")
         exit()
-        
-        
+"""
+    log = import_xes(file_path)
+    return log
+
+def remove_outliers(dataset, attribute):
+    
+    Q1 = dataset[attribute].quantile(0.25)
+    Q3 = dataset[attribute].quantile(0.75)
+    IQR = Q3 - Q1
+    
+    UpperWhisker = Q3 + 1.5 *IQR
+    LowerWhisker = Q1 - 1.5 *IQR
+    
+    filter = (dataset[attribute] > LowerWhisker) | (dataset[attribute] < UpperWhisker)
+    
+    result = dataset.loc[filter]   
+
+    return result
+    
 class Distribution(object):
     def __init__(self, dist_name_list = []):
         self.dist_names = ['norm','lognorm','expon']
@@ -177,13 +181,11 @@ class Distribution(object):
             distribution name and p value
 
             """
-
-
     
-def calculate_service_time():
+def create_methods():
     """
-                This function calculates the average time taken for each activity
-
+                This function calculates the average time taken for each activity and writes methods to method.py file
+                to be used for simulation
                 """
     log = verify_extension_and_import()
     timetaken = {}
@@ -217,42 +219,41 @@ def calculate_service_time():
                     timetaken[attribute] = [mean]
                 else:
                     timetaken[attribute].append(mean)
-    #servicetime = []
-    distribution = {}
-    for attribute in timetaken:
-        dst = Distribution()
-        distribution[attribute]=dst.Fit(timetaken[attribute])
-        timetaken[attribute] = statistics.mean(timetaken[attribute])
-        #servicetime.append(timetaken[attribute])
     
-    #dst = Distribution()
-    #dst.Fit(servicetime)
-    #dst.Plot(servicetime)
-    return timetaken,distribution
 
 
-def create_methods():
-    """
-                This function writes methods to method.py file to be used for simulation
+    dfn = pd.DataFrame.from_dict(timetaken, orient='index')
+    dfr = dfn.transpose()
+          
+    
+    for col in dfr.columns:         
+        cleaned = remove_outliers(dfr, col)
 
-                """
-    log = verify_extension_and_import()
-    timetaken,_ = calculate_service_time()
-    _,distribution = calculate_service_time()
+    cleaned.dropna(inplace = True) 
+    new_timetaken = cleaned.to_dict('list')
+    
+    distribution = {}
+    for attribute in new_timetaken:
+        dst = Distribution()
+        distribution[attribute]=dst.Fit(new_timetaken[attribute])
+        new_timetaken[attribute] = statistics.mean(new_timetaken[attribute])
+    
     user_req = "y"
-    user_input = input("Do you want to modify the average time for any activity? Enter y to modify ")
+    user_input = input("Do you want to modify the average time for any activity? Enter y to modify or press any key to "
+                       "continue ")
     if user_input.lower() == "y":
         while user_req.lower() == "y":
-            print("Average time taken for each activity in seconds: ", timetaken)
+            print("Average time taken for each activity in seconds: ", new_timetaken)
             print("Distribution of each activity and P-value:", distribution)
             user_activity = input("Enter the activity you want to configure the average time taken ")
-            if user_activity not in timetaken:
+            if user_activity not in new_timetaken:
                 print("No such activity found")
             else:
-                print("Activity Found, Average time taken is ", timetaken[user_activity])
+                print("Activity Found, Average time taken is ", new_timetaken[user_activity])
                 user_time = input("Enter the average time (in seconds) ")
-                timetaken[user_activity] = float(user_time)
-            user_req = input("Do you want to configure more activities? Enter y to configure ")
+                new_timetaken[user_activity] = float(user_time)
+            user_req = input("Do you want to configure more activities? Enter y to configure or press any key to "
+                             "continue ")
 
     attributes = {}
     for trace in log:
@@ -260,36 +261,24 @@ def create_methods():
             if "concept:name" in event:
                 attribute = event["concept:name"]
                 if attribute not in attributes:
-                    attributes[attribute] = math.ceil(timetaken[attribute])
+                    attributes[attribute] = math.ceil(new_timetaken[attribute])
                 # attributes[attribute] = attributes[attribute] + 1
     print(attributes)
 
     f = open("methods.py", "w")
-    f.write('''class Trace(object):
-
+    f.write('''\
+class Trace(object):
     def __init__(self,env):
         self.env = env       
     ''')
     for attribute in attributes:
-        f.write('''
-        def %s(self):
-            yield self.env.timeout(%d)       
+        f.write('''\
+    def %s(self):
+        yield self.env.timeout(%d)       
     ''' % (str(attribute).replace(" ", ""), attributes[attribute]))
     f.close()
 
 
 if __name__ == '__main__':
     create_methods()
-
-
-
-
-
-
-
-
-# In[ ]:
-
-
-
 
