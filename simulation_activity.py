@@ -178,7 +178,20 @@ class Distribution(object):
 
             """
 
+def remove_outliers(dataset, attribute):
+    
+    Q1 = dataset[attribute].quantile(0.25)
+    Q3 = dataset[attribute].quantile(0.75)
+    IQR = Q3 - Q1
+    
+    UpperWhisker = Q3 + 1.5 *IQR
+    LowerWhisker = Q1 - 1.5 *IQR
+    
+    filter = (dataset[attribute] > LowerWhisker) | (dataset[attribute] < UpperWhisker)
+    
+    result = dataset.loc[filter]   
 
+    return result
     
 def calculate_service_time():
     """
@@ -217,6 +230,7 @@ def calculate_service_time():
                     timetaken[attribute] = [mean]
                 else:
                     timetaken[attribute].append(mean)
+    
     #servicetime = []
     distribution = {}
     for attribute in timetaken:
@@ -228,7 +242,9 @@ def calculate_service_time():
     #dst = Distribution()
     #dst.Fit(servicetime)
     #dst.Plot(servicetime)
-    return timetaken,distribution
+    return timetaken,distribution   
+    
+   
 
 
 def create_methods():
@@ -239,19 +255,28 @@ def create_methods():
     log = verify_extension_and_import()
     timetaken,_ = calculate_service_time()
     _,distribution = calculate_service_time()
+    
+    dfn = pd.DataFrame.from_dict(timetaken, orient='index')
+    dfr = dfn.transpose()          
+    
+    for col in dfr.columns:         
+        cleaned = remove_outliers(dfr, col)
+
+    cleaned.dropna(inplace = True) 
+    new_timetaken = cleaned.to_dict('list')
     user_req = "y"
     user_input = input("Do you want to modify the average time for any activity? Enter y to modify ")
     if user_input.lower() == "y":
         while user_req.lower() == "y":
-            print("Average time taken for each activity in seconds: ", timetaken)
+            print("Average time taken for each activity in seconds: ", new_timetaken)
             print("Distribution of each activity and P-value:", distribution)
             user_activity = input("Enter the activity you want to configure the average time taken ")
-            if user_activity not in timetaken:
+            if user_activity not in new_timetaken:
                 print("No such activity found")
             else:
-                print("Activity Found, Average time taken is ", timetaken[user_activity])
+                print("Activity Found, Average time taken is ", new_timetaken[user_activity])
                 user_time = input("Enter the average time (in seconds) ")
-                timetaken[user_activity] = float(user_time)
+                new_timetaken[user_activity] = float(user_time)
             user_req = input("Do you want to configure more activities? Enter y to configure ")
 
     attributes = {}
@@ -260,7 +285,7 @@ def create_methods():
             if "concept:name" in event:
                 attribute = event["concept:name"]
                 if attribute not in attributes:
-                    attributes[attribute] = math.ceil(timetaken[attribute])
+                    attributes[attribute] = math.ceil(new_timetaken[attribute])
                 # attributes[attribute] = attributes[attribute] + 1
     print(attributes)
 
