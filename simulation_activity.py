@@ -207,6 +207,8 @@ def create_methods():
                             time = event["time:timestamp"]
                         if "time:timestamp" in next_event:
                             next_time = next_event["time:timestamp"]
+                        else:
+                            next_time = time
                         if attribute not in timetaken:
                             timetaken[attribute] = [(next_time - time).total_seconds()]
                         else:
@@ -273,7 +275,7 @@ class Trace(object):
     ''')
     for attribute in attributes:
         f.write('''\
-    def %s(self):
+def %s(self):
         yield self.env.timeout(%d)       
     ''' % (str(attribute).replace(" ", ""), attributes[attribute]))
     f.close()
