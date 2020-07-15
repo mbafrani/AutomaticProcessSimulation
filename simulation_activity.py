@@ -1,5 +1,6 @@
 import argparse
 import os
+import random
 from pathlib import Path
 from datetime import datetime, timedelta
 import statistics
@@ -233,12 +234,12 @@ def create_methods():
 
     cleaned.dropna(inplace = True) 
     new_timetaken = cleaned.to_dict('list')
-    
+    #print(new_timetaken)
     distribution = {}
     for attribute in new_timetaken:
         dst = Distribution()
         distribution[attribute]=dst.Fit(new_timetaken[attribute])
-        new_timetaken[attribute] = statistics.mean(new_timetaken[attribute])
+        new_timetaken[attribute] = random.choice(new_timetaken[attribute])
     
     user_req = "y"
     user_input = input("Do you want to modify the average time for any activity? Enter y to modify or press any key to "
