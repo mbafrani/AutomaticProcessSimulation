@@ -277,7 +277,7 @@ class Trace(object):
     for attribute in attributes:
         f.write('''\
 def %s(self):
-        yield self.env.timeout(%d)       
+        \tyield self.env.timeout(%d)       
     ''' % (str(attribute).replace(" ", ""), attributes[attribute]))
     f.close()
 
