@@ -14,8 +14,8 @@ from pm4py.objects.petri import semantics
 from pm4py.util import xes_constants
 import sys, importlib
 import methods
-import library
 from pm4py.statistics.traces.log.case_arrival import get_case_arrival_avg
+from pm4py.util.business_hours import BusinessHours
 
 importlib.reload(sys.modules['methods'])
 case_id_key = xes_constants.DEFAULT_TRACEID_KEY
@@ -46,7 +46,7 @@ def discover_process_model():
                    constants.PARAMETER_CONSTANT_TIMESTAMP_KEY: "time:timestamp"}
     print("Beginning Petri net mining. Please wait...")
     net, initial_marking, final_marking = inductive_miner.apply(log, parameters=parameters1)
-    print("Petri Net creation successful")
+    print("Petri Net creation successful")    
     #library.feature_extraction(log)
     relevant_info_generator(net, initial_marking, final_marking, log)
     return net, initial_marking, final_marking
@@ -121,7 +121,8 @@ def simulation_of_events(log, net, initial_marking):
     random.seed(41)  # This helps reproducing the results
 
     # Create an environment and start the setup process
-    env = simpy.Environment()
+    env = simpy.Environment()    
+
     print("Please enter no of cases to be generated")
     no_traces = int(input())
 
@@ -147,20 +148,12 @@ def setup(log, env, no_traces, net, initial_marking):
     else:
         case_arrival_time = get_case_arrival_avg(log)
 
+
     casegen = methods.Trace(env)
 
     # Create more cases while the simulation is running
-    for i in range(1, no_traces+1):
-        # Here is some idea for checking the time of generating cases to be in the business hours
-        if (datetime.now()+timedelta(env.now)).hour>17 or (datetime.now()+timedelta(env.now)).hour <8:
-            shift_time = (datetime.now() + timedelta(env.now))
-            next_time = datetime(shift_time.year, shift_time.month, shift_time.day + 1, 8)
-            new_time = next_time - shift_time
-
-
-            yield env.timeout(new_time.seconds)
-        else:
-            yield env.timeout(case_arrival_time)
+    for i in range(1, no_traces+1):        
+        yield env.timeout(case_arrival_time)
         # print("here",i)
         env.process(simulation(env, 'Case %d' % i, casegen, net, initial_marking, no_traces))
 
@@ -177,7 +170,7 @@ def simulation(env, case_num, case, net, initial_marking, no_traces):
     max_trace_length = 1000  # Only traces with length lesser than 1000 are created
     f = open('simulated-logs.csv', 'w', newline='')
     thewriter = csv.writer(f)
-    thewriter.writerow(['case_id', 'activity', 'timestamp','age'])
+    thewriter.writerow(['case_id', 'activity', 'timestamp'])
     curr_timestamp = datetime.now()
     log = log_instance.EventLog()
     # print("here1", i)
