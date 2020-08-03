@@ -34,7 +34,7 @@ def read_input_file_path():
         --------------
         file.file_path
                 The file path of the input event log file
-    """    """
+    """ 
     parser = argparse.ArgumentParser()
     parser.add_argument("file_path", type=Path)
     file = parser.parse_args()
@@ -44,11 +44,7 @@ def read_input_file_path():
     else:
         print("File does not exist. Please input correct file")
         exit()
-        
     return str(file.file_path)
-    """
-    file = 'running-example.xes'
-    return file
 
 
 def import_xes(file_path):
@@ -106,7 +102,6 @@ def verify_extension_and_import():
             """
 
     file_path = read_input_file_path()
-    """
     file_name, file_extension = os.path.splitext(file_path)
     file_extension = file_extension.replace("'))", "")
     print("File Extension: ", file_extension)
@@ -119,9 +114,6 @@ def verify_extension_and_import():
     else:
         print("Unsupported extension. Supported file extensions are .xes and .csv ONLY")
         exit()
-"""
-    log = import_xes(file_path)
-    return log
 
 def remove_outliers(dataset, attribute):
     
@@ -170,18 +162,7 @@ class Distribution(object):
         #print("Best fitted distribution and the p value are:", self.DistributionName,self.PValue)
        
         return self.DistributionName,self.PValue
-        
-        
-        
     
-    
-        """
-            find the closest distribution of the service time of activities
-            Returns
-            --------------
-            distribution name and p value
-
-            """
     
 def create_methods():
     """
