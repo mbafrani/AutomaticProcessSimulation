@@ -35,5 +35,5 @@ This project provides an open-source tool that automatically simulates given pro
   Using this module, the simulation models of the discovered model including all the performance infomation are generated (method.py file). The next module runs the simulation with the provided input by users.  
   Now run the _simulation.py_ file:
   ```shell
-  python simulation.py
+  python simulation.py running-example.xes
   ```
