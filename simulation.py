@@ -46,8 +46,7 @@ def discover_process_model():
                    constants.PARAMETER_CONSTANT_TIMESTAMP_KEY: "time:timestamp"}
     print("Beginning Petri net mining. Please wait...")
     net, initial_marking, final_marking = inductive_miner.apply(log, parameters=parameters1)
-    print("Petri Net creation successful")    
-    #library.feature_extraction(log)
+    print("Petri Net creation successful")
     relevant_info_generator(net, initial_marking, final_marking, log)
     return net, initial_marking, final_marking
 
@@ -69,42 +68,7 @@ def relevant_info_generator(net, initial_marking, final_marking, log):
                     The input events in the form of a log
 
                 """
-    """
-    user_input = input("Do you want to generate relevant data? Y/N ")
-    if user_input.lower() == "y":
-        user_input = input("Select the functionality :\n"
-                           "0 for Petrinet Characteristics\n"
-                           "1 for information with respect to the events in the log\n"
-                           "2 for Visualizing Petri Net\n"
-                           "3 for Visualizing Petri net with performance information\n"
-                           "4 for information regarding the cycles\n"
-                           "5 for displaying the evaluation metrics for the Petrinet\n"
-                           "6 for displaying the case median duration and the graph\n"
-                           "7 for case statistics (XES only)\n"
-                           "8 for displaying Resource information\n"
-                           "9 to generate simulated event logs\n"
-                           "Please check the folder containing simulation.py file for the generated files ")
-        if "0" in user_input:
-            library.petrinet_characteristics(net)
-        if "1" in user_input:
-            library.event_info(log)
-        if "2" in user_input:
-            library.visualize_petrinet(net, initial_marking, final_marking)
-        if "3" in user_input:
-            library.visualize_petrinet_performance_info(net, initial_marking, final_marking, log)
-        if "4" in user_input:
-            library.cycle_info(net)
-        if "5" in user_input:
-            library.eval_metrics(log, net, initial_marking, final_marking)
-        if "6" in user_input:
-            library.case_info(log)
-        if "7" in user_input:
-            library.case_stat(log, net, initial_marking, final_marking)
-        if "8" in user_input:
-            library.resource_info(log)
-        if "9" in user_input:
-            simulation_of_events(log, net, initial_marking)
-        """
+       
     simulation_of_events(log, net, initial_marking)
 
 
@@ -154,7 +118,6 @@ def setup(log, env, no_traces, net, initial_marking):
     # Create more cases while the simulation is running
     for i in range(1, no_traces+1):        
         yield env.timeout(case_arrival_time)
-        # print("here",i)
         env.process(simulation(env, 'Case %d' % i, casegen, net, initial_marking, no_traces))
 
 
@@ -172,8 +135,7 @@ def simulation(env, case_num, case, net, initial_marking, no_traces):
     thewriter = csv.writer(f)
     thewriter.writerow(['case_id', 'activity', 'timestamp'])
     curr_timestamp = datetime.now()
-    log = log_instance.EventLog()
-    # print("here1", i)
+    log = log_instance.EventLog()    
     trace = log_instance.Trace()
     trace.attributes[case_id_key] = str(case_num.replace('Case', ''))
     marking = copy(initial_marking)
