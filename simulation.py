@@ -53,9 +53,7 @@ def discover_process_model():
 
 def relevant_info_generator(net, initial_marking, final_marking, log):
     """
-                This function generates additional information if requested by the user and continues with the
-                simulation if requested by the user
-
+               
                 Parameters
                 --------------
                 net
