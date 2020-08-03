@@ -30,7 +30,7 @@ This project provides an open-source tool that automatically simulates given pro
   After installing python packages, navigate to the directory where the original event log is stored and run the _simulation_activity.py_ file:
   
   ```shell
-  python simulation_activity.py test-logs.xes
+  python simulation_activity.py running-example.xes
   ```
   Using this module, the simulation models of the discovered model including all the performance infomation are generated (method.py file). The next module runs the simulation with the provided input by users.  
   Now run the _simulation.py_ file:
