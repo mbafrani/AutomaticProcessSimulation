@@ -5,13 +5,14 @@ This project provides an open-source tool that automatically simulates given pro
 * Discrete Event Simulation
   - This module mainly generates new cases based on the feature extracted from the previous module. It also provides a user option to interact with the tool where the user can enter the number of cases to be generated which also acts as an endpoint for the simulation process. Users can also modify the arrival rate of the cases and activity duration for particular activities.
  * Generating the Simulated Logs
-   - These modules transform the simulated events for the generated cases into the event logs and stores them in the CSV file. ،he discrete event simulation clock is converted into a real timestamp and records the activity for the cases.
+   - This module transform the simulated events for the generated cases into the event logs and stores them in the CSV file. The discrete event simulation clock is converted into a real timestamp and records the activity for the cases.
    
   ### Features 
   * Every module in this tool is implemented in Python.
-  * In process discovery step, the presence of the loops in the process model (Petri net) is handled with _maximum trace length_ which limits the execution of unrealistic loops for the simulated cases.
-  * _arrival rate of cases_ are calculated by considering the _business hours_, which results in more accurate value.
+  * In the process discovery step, the presence of the loops in the process model (Petri net) is handled with _maximum trace length_ which limits the execution of unrealistic loops for the simulated cases.
+  * The _arrival rate of cases_ is calculated by considering the _business hours_, which results in more accurate value.
   * This tool provides a user option to modify the _case arrival time_ and _activity time_.
+  * This tool supports both XES and CSV event logs format. along with this, the tool is also capable of handling the event logs with two timestamps i.e. when the start and complete timestamp is given in the log file, the value of the average duration of each activity is calculated.
   
   ### Screencast
   In [this](https://link.com) video, you can watch a screencast of the tool which demonstrates the main functionalities of our Python-based tool for automatic discrete event simulated using event logs.
