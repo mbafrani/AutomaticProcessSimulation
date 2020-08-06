@@ -5,7 +5,7 @@ This project provides an open-source tool that automatically simulates given pro
 * Discrete Event Simulation
   - This module mainly generates new cases based on the feature extracted from the previous module. It also provides a user option to interact with the tool where the user can enter the number of cases to be generated which also acts as an endpoint for the simulation process. Users can also modify the arrival rate of the cases and activity duration for particular activities.
  * Generating the Simulated Logs
-   - This module transform the simulated events for the generated cases into the event logs and stores them in the CSV file. The discrete event simulation clock is converted into a real timestamp and records the activity for the cases.
+   - This module transforms the simulated events for the generated cases into the event logs and stores them in the CSV file. The discrete event simulation clock is converted into a real timestamp and records the activity for the cases.
    
   ### Features 
   * Every module in this tool is implemented in Python.
