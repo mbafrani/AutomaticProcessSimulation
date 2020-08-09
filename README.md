@@ -21,7 +21,7 @@ This project provides an open-source tool that allows the user to generate an ev
   This open-source tool is OS-independent, and you only need to install the Python packages specified in the [requirements](https://github.com/mbafrani/AutomaticProcessSimulation/blob/master/requirements) file.
   
   ### Usage
-  As a preceeding step, install the mentioned python packages using the following commands:
+  As a preceding step, install the mentioned python packages using the following commands:
   
   ```shell
   pip install pm4py
