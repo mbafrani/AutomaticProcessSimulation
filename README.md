@@ -1,40 +1,43 @@
-# PMSIM: Automatic Discrete Event Simulation Using Event Logs
-This project provides an open-source tool that automatically simulates given processes using their event logs and generates event logs. This tool is written in [Python](https://www.python.org/), where we have used [pm4py](http://pm4py.org/) and [SimPy](https://pypi.org/project/simpy/) for process model generation and discrete event simulation. This tool mainly consists of three modules:
+# PMSIM: Automatic Discrete Event Simulation of Processes Using Event Logs
+This project provides an open-source tool that allows the user to generate an event log by simulating the discovered process model from an original event log recorded from a process aware information system. This tool is completely written in [Python](https://www.python.org/), using the [pm4py](http://pm4py.org/) library for process model generation and the [SimPy](https://pypi.org/project/simpy/) library for discrete event simulation. The tool mainly comprises three modules:
 * Process Mining
-  - In this module, the process model is discovered in the form of a Petri net which presents the possible flow of activities for the cases by applying process mining techniques on the original event log. Furthermore, feature extraction is done with the help of performance analyses which is used in discrete event simulation.
+  - In this module, the process model is discovered in the form of a Petri net by applying process mining techniques on the original event log. This Petri net presents the possible flow of activities for the cases. Furthermore, feature extraction is performed in the subsequent performance analyses step, resulting in the calculation of _arrival rate of cases_ and _activity duration_. These extracted features are subsequently used in the discrete event simulation module.
 * Discrete Event Simulation
-  - This module mainly generates new cases based on the feature extracted from the previous module. It also provides a user option to interact with the tool where the user can enter the number of cases to be generated which also acts as an endpoint for the simulation process. Users can also modify the arrival rate of the cases and activity duration for particular activities.
- * Generating the Simulated Logs
-   - This module transforms the simulated events for the generated cases into the event logs and stores them in the CSV file. The discrete event simulation clock is converted into a real timestamp and records the activity for the cases.
-   
+  - In this module, new cases are generated based on the features extracted from the process mining module. Users are also provided with the option to interact with the tool by providing as input, the number of cases to be generated. This input also acts as an endpoint for the simulation process. Additionally, users can modify the arrival rate of cases as well as the activity duration for particular activities.
+ * Generating the Simulated Event Logs
+   - In this module, the simulated events for the generated cases are transformed into an event log. This event log is saved in the form of a ```.csv``` file. Moreover, the discrete event simulation clock is converted into a real timestamp and records each activity for the cases accordingly.
+
   ### Features 
-  * Every module in this tool is implemented in Python.
-  * In the process discovery step, the presence of the loops in the process model (Petri net) is handled with _maximum trace length_ which limits the execution of unrealistic loops for the simulated cases.
-  * The _arrival rate of cases_ is calculated by considering the _business hours_, which results in more accurate value.
-  * This tool provides a user option to modify the _case arrival time_ and _activity time_.
-  * This tool supports both XES and CSV event logs format. along with this, the tool is also capable of handling the event logs with two timestamps i.e. when the start and complete timestamp is given in the log file, the value of the average duration of each activity is calculated.
+  * In the process discovery step, the presence of loops in the Petri net is handled with _maximum trace length_ which limits the execution of unrealistic loops for the simulated cases.
+  * The _arrival rate of cases_ is calculated by considering the _business hours_, which results in a more accurate value.
+  * The tool provides users the option to modify the features _case arrival time_ and _activity time_.
+  * The tool supports both ```.xes``` and ```.csv``` event log formats as input.
+  * The tool is capable of handling event logs with single as well as two timestamps i.e. when the start and complete timestamps are given in the event log, then the value of the average duration of each activity is calculated.
   
   ### Screencast
-  In [this](https://link.com) video, you can watch a screencast of the tool which demonstrates the main functionalities of our Python-based tool for automatic discrete event simulated using event logs.
+  In [this](https://link.com) video, you can watch a screencast of the tool which demonstrates the main functionalities of our Python-based tool for automatic discrete event simulation of processes using event logs. Note that you may need to download the video file to watch. 
  
   ### Requirements
-  The tool is OS-independent, and you only need to install Python packages specified in the [requirements](https://github.com/mbafrani/AutomaticProcessSimulation/blob/master/requirements) file.
+  This open-source tool is OS-independent, and you only need to install the Python packages specified in the [requirements](https://github.com/mbafrani/AutomaticProcessSimulation/blob/master/requirements) file.
   
   ### Usage
-  To simply the usage, please use the following commands to install python packages:
+  As the first and foremost step, install the mentioned python packages using the following commands:
   
   ```shell
   pip install pm4py
   pip install simpy
   ```
   
-  After installing python packages, navigate to the directory where the original event log is stored and run the _simulation_activity.py_ file:
+  Then, navigate to the directory where the original event log (_running-example.xes_ in our case) is stored and run the _simulation_activity.py_ file using the following command:
   
   ```shell
   python simulation_activity.py running-example.xes
   ```
-  Using this module, the simulation models of the discovered model including all the performance infomation are generated (method.py file). The next module runs the simulation with the provided input by users.  
-  Now run the _simulation.py_ file:
+
+  Therewith, the simulation models of the discovered process model (including all the performance information) are produced and stored in the newly generated _methods.py_ file.
+  
+  Now, run the _simulation.py_ file which performs the actual simulation process (optionally with custom inputs provided by users) using the following command:
+  
   ```shell
   python simulation.py running-example.xes
   ```
