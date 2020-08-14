@@ -15,7 +15,7 @@ This project provides an open-source tool that allows the user to generate an ev
   * The tool is capable of handling event logs with single as well as two timestamps i.e. when the start and complete timestamps are given in the event log, then the value of the average duration of each activity is calculated.
   
   ### Screencast
-  In [this](https://drive.google.com/file/d/1vi8TGhOmqXtKckpLpyBbkDQ_4dVXEOdN/view?usp=sharing) video, you can watch a screencast of the tool which demonstrates the main functionalities of our Python-based tool for automatic discrete event simulation of processes using event logs. Please note that you may need to download the video file to watch. 
+  In [this](https://drive.google.com/file/d/1YVVF7_t8LNCEiwmNrgnNMJajL0nq19nI/view?usp=sharing) video, you can watch a screencast of the tool which demonstrates the main functionalities of our Python-based tool for automatic discrete event simulation of processes using event logs. Please note that you may need to download the video file to watch. 
  
   ### Requirements
   This open-source tool is OS-independent, and you only need to install the Python packages specified in the [requirements](https://github.com/mbafrani/AutomaticProcessSimulation/blob/master/requirements) file.
