@@ -42,7 +42,9 @@ This project provides an open-source tool that allows the user to generate an ev
   python simulation.py running-example.xes
   ```
 ### Information for Citation 
-@misc{PTSIM2021,
+- [Link to the paper](https://arxiv.org/pdf/2102.08774v1.pdf)
+- Bibtex Citation:
+  -   @misc{PTSIM2021,
       title={A Python Extension to Simulate Petri nets in Process Mining}, 
       author={M. Pourbafrani and Sandhya Vasudevan and Faizan Zafar and Yuan Xingran and Ravikumar Singh and Wil M. P. van der Aalst},
       year={2021},
