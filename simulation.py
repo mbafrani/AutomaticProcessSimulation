@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import simulation_activity
-from pm4py.algo.discovery.inductive import factory as inductive_miner
+from pm4py.algo.discovery.inductive import algorithm as inductive_miner
 import warnings
 import pandas as pd
 import csv
@@ -131,7 +131,7 @@ def simulation(env, case_num, case, net, initial_marking, no_traces):
     max_trace_length = 1000  # Only traces with length lesser than 1000 are created
     f = open('simulated-logs.csv', 'w', newline='')
     thewriter = csv.writer(f)
-    thewriter.writerow(['case_id', 'activity', 'timestamp'])
+    thewriter.writerow(['case_id', 'activity', 'time:timestamp'])
     curr_timestamp = datetime.now()
     log = log_instance.EventLog()    
     trace = log_instance.Trace()

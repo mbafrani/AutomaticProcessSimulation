@@ -4,9 +4,10 @@ import random
 from pathlib import Path
 from datetime import datetime, timedelta
 import statistics
-from pm4py.objects.log.importer.xes import factory as xes_import_factory
-from pm4py.objects.log.adapters.pandas import csv_import_adapter
-from pm4py.objects.conversion.log import factory as conversion_factory
+from pm4py.objects.log.importer.xes import importer as xes_import_factory
+#from pm4py.objects.log.adapters.pandas import csv_import_adapter
+from pm4py.objects.log.util import dataframe_utils
+from pm4py.objects.conversion.log import converter as conversion_factory
 import math
 import warnings
 from pm4py.util import xes_constants
@@ -76,7 +77,8 @@ def import_csv(file_path):
             csv_log
                 The input event logs in the form of a log
             """
-    data_frame = csv_import_adapter.import_dataframe_from_path(
+    #data_frame = csv_import_adapter.import_dataframe_from_path(
+    data_frame=pd.read_csv(
         os.path.join(file_path), sep=";")
     data_frame["time:timestamp"] = data_frame["time:timestamp"].apply(lambda x:
                                                                       datetime.strptime(x, '%d-%m-%Y:%H.%M'))
