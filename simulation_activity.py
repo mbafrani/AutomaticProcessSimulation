@@ -103,7 +103,8 @@ def verify_extension_and_import():
                 The input event logs in the form of a log
             """
 
-    file_path = read_input_file_path()
+    file_path ="Prozessmodel.xes"
+    #read_input_file_path()
     file_name, file_extension = os.path.splitext(file_path)
     file_extension = file_extension.replace("'))", "")
     print("File Extension: ", file_extension)
@@ -210,18 +211,22 @@ def create_methods():
 
     dfn = pd.DataFrame.from_dict(timetaken, orient='index')
     dfr = dfn.transpose()
+    dfr.dropna(inplace=True)
           
     
-    for col in dfr.columns:         
-        cleaned = remove_outliers(dfr, col)
+    #for col in dfr.columns:
+        #cleaned = remove_outliers(dfr, col)
 
-    cleaned.dropna(inplace = True) 
-    new_timetaken = cleaned.to_dict('list')
+    #cleaned.dropna(inplace = True)
+    new_timetaken = dfr.to_dict('list')
     #print(new_timetaken)
     distribution = {}
     for attribute in new_timetaken:
-        dst = Distribution()
-        distribution[attribute]=dst.Fit(new_timetaken[attribute])
+        try:
+            dst = Distribution()
+            distribution[attribute]=dst.Fit(new_timetaken[attribute])
+        except:
+            distribution ='few data for distribution fitting'
         new_timetaken[attribute] = random.choice(new_timetaken[attribute])
     
     user_req = "y"
